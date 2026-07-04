@@ -60,7 +60,7 @@ pipeline {
                     node_modules/.bin/serve -s build &
                     sleep 10
                     npm ls @playwright/test
-                    npx playwright@1.61.0 test
+                    npx playwright test
                 '''
             }
         }
