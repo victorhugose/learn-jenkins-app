@@ -28,42 +28,46 @@ pipeline {
         }
         */
 
-        stage('Test') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
+        stage('Run Tests') {
+            parallel {
+                stage('Test') {
+                    agent {
+                        docker {
+                            image 'node:18-alpine'
+                            reuseNode true
+                        }
+                    }   
+                    steps {
+                        sh '''
+                            # test -f build/index.html                    
+                            npm test
+                        '''
+                    }
                 }
-            }   
-            steps {
-                sh '''
-                    # test -f build/index.html                    
-                    npm test
-                '''
-            }
-        }
 
-        stage('E2E') {
-            agent {
-                docker {
-                    image 'mcr.microsoft.com/playwright:v1.61.0-noble'
-                    reuseNode true
+                stage('E2E') {
+                    agent {
+                        docker {
+                            image 'mcr.microsoft.com/playwright:v1.61.0-noble'
+                            reuseNode true
+                        }
+                    }   
+                    steps {
+                        sh '''
+                            # test -f build/index.html                    
+                            # npm test
+
+                            echo 'E2E stage steps'
+                            npm install serve
+                            node_modules/.bin/serve -s build &
+                            sleep 10
+                            npm ls @playwright/test
+                            npx playwright test --reporter=html
+                        '''
+                    }
                 }
-            }   
-            steps {
-                sh '''
-                    # test -f build/index.html                    
-                    # npm test
-
-                    echo 'E2E stage steps'
-                    npm install serve
-                    node_modules/.bin/serve -s build &
-                    sleep 10
-                    npm ls @playwright/test
-                    npx playwright test --reporter=html
-                '''
             }
-        }
+        }        
     }
 
     post {
