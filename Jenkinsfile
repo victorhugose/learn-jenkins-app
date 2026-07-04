@@ -54,7 +54,7 @@ pipeline {
                 sh '''
                     # test -f build/index.html                    
                     # npm test
-                    npm install -g serve
+                    npm install serve
                     serve -s build
                     npx playwright test
                 '''
