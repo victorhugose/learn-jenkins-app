@@ -7,8 +7,7 @@ pipeline {
         /*
             Line 1
             Line 2
-        */
-        /*
+        
         stage('Build') {
             agent {
                 docker {
@@ -28,6 +27,7 @@ pipeline {
             }
         }
         */
+
         stage('Test') {
             agent {
                 docker {
@@ -39,6 +39,24 @@ pipeline {
                 sh '''
                     # test -f build/index.html                    
                     npm test
+                '''
+            }
+        }
+
+        stage('E2E') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.61.0-noble'
+                    reuseNode true
+                }
+            }   
+            steps {
+                sh '''
+                    # test -f build/index.html                    
+                    # npm test
+                    npm install -g serve
+                    serve -s build
+                    npx playwright test
                 '''
             }
         }
