@@ -54,6 +54,7 @@ pipeline {
                 sh '''
                     # test -f build/index.html                    
                     # npm test
+
                     npm install serve
                     node_modules/.bin/serve -s build &
                     sleep 10
@@ -65,7 +66,7 @@ pipeline {
 
     post {
         always {
-            junit 'test-results/junit.xml'
+            junit 'jest-results/junit.xml'
         }
     }
 }
