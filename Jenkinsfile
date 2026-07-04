@@ -55,7 +55,7 @@ pipeline {
                     # test -f build/index.html                    
                     # npm test
                     npm install serve
-                    serve -s build
+                    node_modules/.bin/serve -s build
                     npx playwright test
                 '''
             }
